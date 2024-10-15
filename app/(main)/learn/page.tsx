@@ -1,10 +1,50 @@
+import { FeedWrapper } from "@/components/FeedWrapper";
+import { StickyWrapper } from "@/components/StickyWrapper";
+import { Header } from "./_components/Header";
+import { UserProgress } from "@/components/UserProgress";
+import { getUnits, getUserProgress } from "@/db/queries";
+import { redirect } from "next/navigation";
+import { Unit } from "./_components/Unit";
 
-const LearnPage = () => {
+const LearnPage = async () => {
+  const userProgressApiCall = getUserProgress();
+  const unitsApiCall = getUnits();
+
+  const [userProgress, units] = await Promise.all([
+    userProgressApiCall,
+    unitsApiCall,
+  ]);
+
+  if (!userProgress || !userProgress.activeCourse) redirect("/courses");
+
   return (
-    <div>
-      learn
+    <div className="flex flex-row-reverse gap-[48px] px-6">
+      <StickyWrapper>
+        <UserProgress
+          activeCourse={userProgress.activeCourse}
+          hearts={userProgress.hearts}
+          points={userProgress.points}
+          hasActiveSubscription={false}
+        />
+      </StickyWrapper>
+      <FeedWrapper>
+        <Header title={userProgress.activeCourse.title} />
+        {units.map((u) => (
+          <div key={u.id} className="mb-10">
+            <Unit
+              id={u.id}
+              order={u.order}
+              description={u.description}
+              title={u.title}
+              lessons={u.lessons}
+              activeLesson={null}
+              activeLessonPercentage={0}
+            />
+          </div>
+        ))}
+      </FeedWrapper>
     </div>
-  )
-}
+  );
+};
 
-export default LearnPage
+export default LearnPage;
