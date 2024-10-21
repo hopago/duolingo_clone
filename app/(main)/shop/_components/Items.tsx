@@ -16,7 +16,7 @@ type Props = {
 
 const POINTS_TO_REFILL = 25;
 
-const Items = ({ hearts, points, hasActiveSubscription }: Props) => {
+const Items = ({ hearts, points }: Props) => {
   const [pending, startTransition] = useTransition();
 
   const onRefillHearts = () => {

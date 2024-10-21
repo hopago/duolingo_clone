@@ -30,7 +30,7 @@ type Props = {
   })[];
   initialHearts: number;
   initialPercentage: number;
-  userSubscription: any;
+  userSubscription: undefined;
 };
 
 const Quiz = ({
@@ -62,12 +62,14 @@ const Quiz = ({
     autoPlay: true,
   });
 
-  const [lessonId, setLessonId] = useState(initialLessonId);
+  console.log(_c, _w);
+
+  const [lessonId] = useState(initialLessonId);
   const [hearts, setHearts] = useState<number>(initialHearts);
   const [percentage, setPercentage] = useState<number>(() => {
     return initialPercentage === 100 ? 0 : initialPercentage;
   });
-  const [challenges, setChallenges] = useState(initialLessonChallenges);
+  const [challenges] = useState(initialLessonChallenges);
   const [activeIndex, setActiveIndex] = useState<number>(() => {
     const uncompletedIndex = challenges.findIndex(
       (challenge) => !challenge.completed
@@ -205,7 +207,7 @@ const Quiz = ({
       <Header
         hearts={hearts}
         percentage={percentage}
-        hasActiveSubscription={!!userSubscription?.isActive}
+        hasActiveSubscription={!!userSubscription} // TODO: userSubscription.isActive
       />
       <div className="flex-1">
         <div className="h-full flex items-center justify-center">
