@@ -3,17 +3,21 @@
 import { challenges, challengesOptions } from "@/db/schema";
 
 import { useState, useTransition } from "react";
-
-import { toast } from "sonner";
-
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 import { Header } from "./Header";
 import { QuestionBubble } from "./QuestionBubble";
 import Challenge from "./Challenge";
 import Footer from "./Footer";
+import { ResultCard } from "./ResultCard";
+
 import { upsertChallengeProgress } from "@/actions/challenge-progress";
 import { reduceHearts } from "@/actions/user-progress";
+
+import { toast } from "sonner";
+import { useAudio, useWindowSize } from "react-use";
+import Confetti from "react-confetti";
 
 type Props = {
   initialLessonId: number;
@@ -33,7 +37,17 @@ const Quiz = ({
   initialPercentage,
   userSubscription,
 }: Props) => {
+  const router = useRouter();
+
+  const { width, height } = useWindowSize();
+
   const [pending, startTransition] = useTransition();
+
+  const [lessonId, setLessonId] = useState(initialLessonId);
+  const [correctAudio, _c, correctControls] = useAudio({
+    src: "/sound/success.mp3",
+  });
+  const [wrongAudio, _w, wrongControls] = useAudio({ src: "/sound/wrong.mp3" });
 
   const [hearts, setHearts] = useState<number>(initialHearts);
   const [percentage, setPercentage] = useState<number>(initialPercentage);
@@ -48,6 +62,48 @@ const Quiz = ({
   const [selectedOption, setSelectedOption] = useState<number>();
 
   const challenge = challenges[activeIndex];
+  if (!challenge) {
+    return (
+      <>
+        <Confetti
+          recycle={false}
+          numberOfPieces={500}
+          tweenDuration={10000}
+          width={width}
+          height={height}
+        />
+        <div className="flex flex-col gap-y-4 lg:gap-y-8 max-w-lg mx-auto text-center items-center justify-center h-full">
+          <Image
+            src="/image/success.png"
+            alt="Finish"
+            className="hidden lg:block"
+            height={100}
+            width={100}
+          />
+          <Image
+            src="/image/success.png"
+            alt="Finish"
+            className="block lg:hidden"
+            height={50}
+            width={50}
+          />
+          <h1 className="text-xl lg:text-3xl font-bold text-neutral-700">
+            축하드립니다! <br /> 학습을 성공적으로 마치셨네요.
+          </h1>
+          <div className="flex items-center gap-x-4 w-full">
+            <ResultCard variant="points" value={challenges.length * 10} />
+            <ResultCard variant="hearts" value={hearts} />
+          </div>
+        </div>
+        <Footer
+          lessonId={lessonId}
+          status="completed"
+          onCheck={() => router.push("/learn")}
+        />
+      </>
+    );
+  }
+
   const options = challenge.challengesOptions ?? [];
 
   const title =
@@ -91,6 +147,7 @@ const Quiz = ({
               return;
             }
 
+            correctControls.play();
             setStatus("correct");
             setPercentage((prev) => prev + 100 / challenges.length);
 
@@ -110,6 +167,7 @@ const Quiz = ({
               return;
             }
 
+            wrongControls.play();
             setStatus("wrong");
 
             if (!response?.error) {
@@ -123,6 +181,8 @@ const Quiz = ({
 
   return (
     <>
+      {wrongAudio}
+      {correctAudio}
       <Header
         hearts={hearts}
         percentage={percentage}

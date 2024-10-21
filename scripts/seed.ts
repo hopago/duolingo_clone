@@ -96,6 +96,23 @@ const main = async () => {
       },
     ]);
 
+    await db.insert(schema.challenges).values([
+      {
+        id: 4,
+        lessonId: 2, // 독해
+        type: "SELECT",
+        order: 1,
+        question: "문제에 대한 해결책을 찾기 위한 질서 정연한 방법으로 포괄적이고 즉각적인 방식을 사용하는 것은?",
+      },
+      {
+        id: 5,
+        lessonId: 2, // 독해
+        type: "ASSIST",
+        order: 2,
+        question: "'무엇을, 어떻게, 왜'에 초점을 맞춘 구조화된 접근 방식을 사용하는 것",
+      },
+    ]);
+
     await db.insert(schema.challengesOptions).values([
       {
         id: 1,

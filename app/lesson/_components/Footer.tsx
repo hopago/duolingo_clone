@@ -5,18 +5,14 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 
-import { useRouter } from "next/navigation";
-
 type Props = {
   disabled?: boolean;
   status: "none" | "wrong" | "correct" | "completed";
   onCheck: () => void;
-  lessonId?: boolean;
+  lessonId?: number;
 };
 
 const Footer = ({ disabled, status, onCheck, lessonId }: Props) => {
-  const router = useRouter();
-
   useKey("Enter", onCheck, {}, [onCheck]);
 
   const isMobile = useMedia("(max-width: 1024px)");
@@ -47,11 +43,10 @@ const Footer = ({ disabled, status, onCheck, lessonId }: Props) => {
             variant="default"
             size={isMobile ? "sm" : "lg"}
             onClick={() => {
-              router.push("/learn");
               window.location.href = `/lesson/${lessonId}`;
             }}
           >
-            다음으로
+            다시 학습하기
           </Button>
         )}
         <Button
@@ -64,7 +59,7 @@ const Footer = ({ disabled, status, onCheck, lessonId }: Props) => {
           {status === "none" && "제출하기"}
           {status === "correct" && "다음으로"}
           {status === "wrong" && "다시 시도하기"}
-          {status === "completed" && "다시 학습하기"}
+          {status === "completed" && "다음 단계로"}
         </Button>
       </div>
     </footer>
