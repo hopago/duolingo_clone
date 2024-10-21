@@ -49,7 +49,7 @@ export const Sidebar = ({ className }: Props) => {
         />
         <SidebarItem
           label="상점이동"
-          href="/store"
+          href="/shop"
           iconSrc="/image/store.svg"
         />
       </div>

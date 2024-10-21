@@ -16,8 +16,11 @@ import { upsertChallengeProgress } from "@/actions/challenge-progress";
 import { reduceHearts } from "@/actions/user-progress";
 
 import { toast } from "sonner";
-import { useAudio, useWindowSize } from "react-use";
+import { useAudio, useMount, useWindowSize } from "react-use";
 import Confetti from "react-confetti";
+
+import { useHeartsModal } from "@/store/use-hearts-modal";
+import { usePracticeModal } from "@/store/use-practice-modal";
 
 type Props = {
   initialLessonId: number;
@@ -37,20 +40,33 @@ const Quiz = ({
   initialPercentage,
   userSubscription,
 }: Props) => {
+  const { open: openHeartsModal } = useHeartsModal();
+  const { open: openPracticeModal } = usePracticeModal();
+
+  useMount(() => {
+    initialPercentage === 100 && openPracticeModal();
+  });
+
   const router = useRouter();
 
   const { width, height } = useWindowSize();
 
   const [pending, startTransition] = useTransition();
 
-  const [lessonId, setLessonId] = useState(initialLessonId);
   const [correctAudio, _c, correctControls] = useAudio({
     src: "/sound/success.mp3",
   });
   const [wrongAudio, _w, wrongControls] = useAudio({ src: "/sound/wrong.mp3" });
+  const [finishAudio] = useAudio({
+    src: "/sound/success_completed.mp3",
+    autoPlay: true,
+  });
 
+  const [lessonId, setLessonId] = useState(initialLessonId);
   const [hearts, setHearts] = useState<number>(initialHearts);
-  const [percentage, setPercentage] = useState<number>(initialPercentage);
+  const [percentage, setPercentage] = useState<number>(() => {
+    return initialPercentage === 100 ? 0 : initialPercentage;
+  });
   const [challenges, setChallenges] = useState(initialLessonChallenges);
   const [activeIndex, setActiveIndex] = useState<number>(() => {
     const uncompletedIndex = challenges.findIndex(
@@ -65,6 +81,7 @@ const Quiz = ({
   if (!challenge) {
     return (
       <>
+        {finishAudio}
         <Confetti
           recycle={false}
           numberOfPieces={500}
@@ -143,7 +160,7 @@ const Quiz = ({
         upsertChallengeProgress(challenge.id)
           .then((response) => {
             if (response?.error === "hearts") {
-              console.error("Missing hearts");
+              openHeartsModal();
               return;
             }
 
@@ -159,11 +176,13 @@ const Quiz = ({
           .catch(() => toast.error("무언가 잘못됐군요..."));
       });
     } else {
+      if (initialPercentage === 100) return;
+
       startTransition(() => {
         reduceHearts(challenge.id)
           .then((response) => {
             if (response?.error === "hearts") {
-              console.error("Missing hearts");
+              openHeartsModal();
               return;
             }
 
