@@ -85,8 +85,14 @@ const main = async () => {
         lessonId: 1, // 단어
         type: "ASSIST",
         order: 2,
-        // TODO: ASSIST
-        question: "",
+        question: "'인간'",
+      },
+      {
+        id: 3,
+        lessonId: 1,
+        type: "SELECT",
+        order: 3,
+        question: "다음 중 남성성의 특질이 아닌 것을 고르시오.",
       },
     ]);
 
@@ -97,7 +103,7 @@ const main = async () => {
         imageSrc: "/image/challenges_options/human.png",
         correct: true,
         text: "인간",
-        audioSrc: "/sound/1_1_1-1.mp3",
+        audioSrc: "/sound/person.mp3",
       },
       {
         id: 2,
@@ -105,7 +111,7 @@ const main = async () => {
         imageSrc: "/image/challenges_options/animal.png",
         correct: false,
         text: "동물",
-        audioSrc: "/sound/1_1_1-2.mp3",
+        audioSrc: "/sound/animal.mp3",
       },
       {
         id: 3,
@@ -113,7 +119,58 @@ const main = async () => {
         imageSrc: "/image/challenges_options/AI.jpg",
         correct: false,
         text: "A.I",
-        audioSrc: "/sound/1_1_1-3.mp3",
+        audioSrc: "/sound/AI.mp3",
+      },
+    ]);
+
+    await db.insert(schema.challengesOptions).values([
+      {
+        id: 4,
+        challengeId: 2,
+        correct: true,
+        text: "인간",
+        audioSrc: "/sound/person.mp3",
+      },
+      {
+        id: 5,
+        challengeId: 2,
+        correct: false,
+        text: "동물",
+        audioSrc: "/sound/animal.mp3",
+      },
+      {
+        id: 6,
+        challengeId: 2,
+        correct: false,
+        text: "A.I",
+        audioSrc: "/sound/AI.mp3",
+      },
+    ]);
+
+    await db.insert(schema.challengesOptions).values([
+      {
+        id: 7,
+        challengeId: 3,
+        correct: true,
+        text: "의존성",
+        imageSrc: "/image/challenges_options/rely.png",
+        audioSrc: "/sound/dependent.mp3",
+      },
+      {
+        id: 8,
+        challengeId: 3,
+        correct: false,
+        text: "문제해결",
+        imageSrc: "/image/challenges_options/problem_solving.png",
+        audioSrc: "/sound/problem_solving.mp3",
+      },
+      {
+        id: 9,
+        challengeId: 3,
+        correct: false,
+        text: "보호",
+        imageSrc: "/image/challenges_options/protection.png",
+        audioSrc: "/sound/protection.mp3",
       },
     ]);
 

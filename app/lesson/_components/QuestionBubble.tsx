@@ -1,10 +1,19 @@
 import Image from "next/image";
 
+import { redirect } from "next/navigation";
+
+import { toast } from "sonner";
+
 type Props = {
   question: string;
 };
 
 export const QuestionBubble = ({ question }: Props) => {
+  if (!question) {
+    toast.message("질문이 아직 준비되지 않아 학습 페이지로 넘어가요");
+    redirect("/learn");
+  }
+
   return (
     <div className="flex items-center gap-x-4 mb-6">
       <Image
