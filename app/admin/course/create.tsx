@@ -1,11 +1,11 @@
-import { SimpleForm, TextField, Create } from "react-admin";
+import { SimpleForm, TextInput, Create } from "react-admin";
 
 const CourseCreate = () => {
   return (
     <Create>
       <SimpleForm>
-        <TextField source="title" label="Title" />
-        <TextField source="imageSrc" label="ImageSrc" />
+        <TextInput source="title" label="Title" />
+        <TextInput source="imageSrc" label="ImageSrc" />
       </SimpleForm>
     </Create>
   );

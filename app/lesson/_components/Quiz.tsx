@@ -80,7 +80,7 @@ const Quiz = ({
   const [selectedOption, setSelectedOption] = useState<number>();
 
   const challenge = challenges[activeIndex];
-  if (!challenge) {
+  if (!challenge)
     return (
       <>
         {finishAudio}
@@ -121,7 +121,6 @@ const Quiz = ({
         />
       </>
     );
-  }
 
   const options = challenge.challengesOptions ?? [];
 
